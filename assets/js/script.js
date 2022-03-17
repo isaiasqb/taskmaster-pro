@@ -44,7 +44,7 @@ var saveTasks = function() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
-// event listener that will allow the task to be edited once the text is being clicked on
+// EDIT TASK event listener that will allow the task to be edited once the text is being clicked on
 $(".list-group").on("click", "p", function() {
   var text = $(this) //selects the text value of the element clicked on, in this case the p and saves it into the variable text
     .text()
@@ -59,7 +59,7 @@ $(".list-group").on("click", "p", function() {
   textInput.trigger("focus"); //automatically highlight the input box for to be edited
 });
 
-//blur event will trigger as soon as the user interacts with anything other than the <textarea> element.
+//SAVE EDITED TASK blur event will trigger as soon as the user interacts with anything other than the <textarea> element.
 $(".list-group").on("blur", "textarea", function(){
   //get the text area current value text
   var text = $(this)
@@ -84,9 +84,55 @@ $(".list-group").on("blur", "textarea", function(){
   var taskP = $("<p>")
     .addClass("m-1")
     .text(text);
-
   //replace textarea with p element
   $(this).replaceWith(taskP)
+});
+
+// EDIT DUE DATE, ability to edit date when when due date <span> is clicked
+$(".list-group").on("click", "span", function(){
+  // get the current text
+  var date = $(this)
+    .text()
+    .trim();
+  //create a new inout element and display the text value from the original date
+  var dateInput = $("<input>")
+    .attr("type", "text")
+    .addClass("form-control")
+    .val(date);
+  //swap out the original span date with the newly created input element
+  $(this).replaceWith(dateInput);
+  // automatically focus on the new element
+  dateInput.trigger("focus");
+});
+
+//SAVE DUE DATE value of the date was upodated, this saves the new info once the uses click out of it
+$(".list-group").on("blur", "input[type='text']", function(){
+  //get current text
+  var date = $(this)
+    .val()
+    .trim();
+  
+  // get the parent ul's id attribute
+  var status = $(this)
+    .closest(".list-group")
+    .attr("id")
+    .replace("list-", "");
+
+  //get the task position in the list of other list elements
+  var index = $(this)
+    .closest(".list-group-item")
+    .index();
+  
+  // update task in array and savwe to local storage
+  tasks[status][index].date = date;
+  saveTasks();
+
+  //recreate span element with bootstrap classes and assign the value of the updated date
+  var taskSpan = $("<span>")
+    .addClass("badge badge-primary badge-pill")
+    .text(date);
+  //replace the input type="text" element with the new <span> element
+  $(this).replaceWith(taskSpan);
 });
 
 
