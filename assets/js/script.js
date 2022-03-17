@@ -33,7 +33,6 @@ var loadTasks = function() {
 
   // loop over object properties
   $.each(tasks, function(list, arr) {
-    console.log(list, arr);
     // then loop over sub-array
     arr.forEach(function(task) {
       createTask(task.text, task.date, list);
@@ -43,8 +42,52 @@ var loadTasks = function() {
 
 var saveTasks = function() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
-};
+}
 
+// event listener that will allow the task to be edited once the text is being clicked on
+$(".list-group").on("click", "p", function() {
+  var text = $(this) //selects the text value of the element clicked on, in this case the p and saves it into the variable text
+    .text()
+    .trim();
+
+  var textInput = $("<textarea>")
+    .addClass("form-control")
+    .val(text); // creates a nex textarea and gives  passes the p text as the text value of this new text area
+
+  $(this).replaceWith(textInput);  //replaced the clicked element with the newly created text area
+
+  textInput.trigger("focus"); //automatically highlight the input box for to be edited
+});
+
+//blur event will trigger as soon as the user interacts with anything other than the <textarea> element.
+$(".list-group").on("blur", "textarea", function(){
+  //get the text area current value text
+  var text = $(this)
+    .val()
+    .trim();
+  
+  // get the parent ul's id attribute
+  var status = $(this)
+    .closest(".list-group")
+    .attr("id")
+    .replace("list-", "");
+  
+  // get the task's position in the list of other li elements
+  var index = $(this)
+    .closest(".list-group-item")
+    .index();
+
+  tasks[status][index].text = text;
+  saveTasks()
+
+  // convert the <textarea> back into a <p> element. 
+  var taskP = $("<p>")
+    .addClass("m-1")
+    .text(text);
+
+  //replace textarea with p element
+  $(this).replaceWith(taskP)
+});
 
 
 
@@ -95,3 +138,8 @@ $("#remove-tasks").on("click", function() {
 loadTasks();
 
 
+document.querySelector("#wrapper").addEventListener("click", function(event) {
+  if (event.target.matches(".task")) {
+    console.log("dynamic task was clicked");
+  }
+ });
