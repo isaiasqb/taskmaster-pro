@@ -1,5 +1,62 @@
 var tasks = {};
 
+ // working on makind the li items, selectable
+ $(".card .list-group").sortable({
+  connectWith: $(".card .list-group"),
+
+  scroll: false,
+  tolerance: "pointer",
+  helper: "clone",
+  activate: function(event) {
+    // console.log("activate", this);
+  },
+  deactivate: function(event) {
+    // console.log("deactivate", this);
+  },
+  over: function(event) {
+    // console.log("over", event.target);
+  },
+  out: function(event) {
+    // console.log("out", event.target);
+  },
+  update: function(event) {
+    //temporary array to store the data in, later it will be pushed onto localStorage
+    var tempArr = []
+
+    //loop over current set of chuldren in sortable list
+    $(this).children().each(function(){
+      var text = $(this)
+        .find("p")
+        .text()
+        .trim();
+      
+      var date = $(this)
+        .find("span")
+        .text()
+        .trim();
+
+    // add task info to the temp array as an object
+    tempArr.push({
+      text: text,
+      date: date
+      });
+    });//END of children loop
+    
+    //each list has an ID, we will tirm down the portion that matches the keys in the tasks object
+    var arrName = $(this)
+    .attr("id")
+    .replace("list-", ""); //replaces the portion mentioned with nothing, leaving behinf the status of the list
+    //update array on task object and save
+    tasks[arrName] = tempArr;
+    saveTasks()
+
+    console.log("tempArray", tempArr);
+    console.log("tasksObjec", tasks);
+  } //end of update declaration
+});//end of the sortable function 
+
+
+
 var createTask = function(taskText, taskDate, taskList) {
   // create elements that make up a task item
   var taskLi = $("<li>").addClass("list-group-item");
@@ -94,7 +151,7 @@ $(".list-group").on("click", "span", function(){
   var date = $(this)
     .text()
     .trim();
-  //create a new inout element and display the text value from the original date
+  //create a new input element and display the text value from the original date
   var dateInput = $("<input>")
     .attr("type", "text")
     .addClass("form-control")
@@ -134,6 +191,20 @@ $(".list-group").on("blur", "input[type='text']", function(){
   //replace the input type="text" element with the new <span> element
   $(this).replaceWith(taskSpan);
 });
+
+//TRASH area 
+$("#trash").droppable({
+  accept: ".card .list-group-item",
+  tolerance: "touch",
+
+  drop: function(event, ui) {
+    console.log("drop");
+    ui.draggable.remove();
+  },
+  out: function(event, ui) {
+    console.log("out")
+  }
+}); //end of trash.droppable function
 
 
 
@@ -189,3 +260,4 @@ document.querySelector("#wrapper").addEventListener("click", function(event) {
     console.log("dynamic task was clicked");
   }
  });
+
