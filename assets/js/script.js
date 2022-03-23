@@ -86,6 +86,7 @@ var createTask = function(taskText, taskDate, taskList) {
 
 // AUDIT the task and color code depending on the dates
 var auditTask =  function(taskEl) {
+  console.log(taskEl);
   // get date from task element
   var date = $(taskEl).find("span").text().trim();
 
@@ -301,11 +302,14 @@ $("#remove-tasks").on("click", function() {
 loadTasks();
 
 
-document.querySelector("#wrapper").addEventListener("click", function(event) {
-  if (event.target.matches(".task")) {
-    console.log("dynamic task was clicked");
-  }
- });
-
-
-
+// document.querySelector("#wrapper").addEventListener("click", function(event) {
+//   if (event.target.matches(".task")) {
+//     console.log("dynamic task was clicked");
+//   }
+//  });
+// run the auditTaslk fucntion every 30minutes
+setInterval(function(){
+  $(".card .list-group-item").each(function(index, el) {
+    auditTask(el);
+  });
+}, 1800000) // or tou can write it like (1000 * 60) * 30
