@@ -8,16 +8,20 @@ var tasks = {};
   tolerance: "pointer",
   helper: "clone",
   activate: function(event) {
-    // console.log("activate", this);
+    // highlight all the lists to know when an element is being dragged
+    $(this).addClass("dropover");
   },
   deactivate: function(event) {
-    // console.log("deactivate", this);
+    // remove the highlight once the dragging is over
+    $(this).removeClass("dropover")
   },
   over: function(event) {
-    // console.log("over", event.target);
+    // highlight a specific list when an item is begin dragged over it
+    $(event.target).addClass("dropover-active");
   },
   out: function(event) {
-    // console.log("out", event.target);
+    //remove the highlight once an item is not dragged on top of the list
+    $(event.target).removeClass("dropover-active");
   },
   update: function(event) {
     //temporary array to store the data in, later it will be pushed onto localStorage
