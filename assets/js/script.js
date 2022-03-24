@@ -10,10 +10,14 @@ var tasks = {};
   activate: function(event) {
     // highlight all the lists to know when an element is being dragged
     $(this).addClass("dropover");
+    // make the trash are appear
+    $(".bottom-trash").addClass("bottom-trash-drag")
   },
   deactivate: function(event) {
     // remove the highlight once the dragging is over
     $(this).removeClass("dropover")
+    //make the trash area disspaear after you are done dragging an item
+    $(".bottom-trash").removeClass("bottom-trash-drag");
   },
   over: function(event) {
     // highlight a specific list when an item is begin dragged over it
@@ -247,12 +251,14 @@ $(".list-group").on("change", "input[type='text']", function(){
 $("#trash").droppable({
   accept: ".card .list-group-item",
   tolerance: "touch",
-
+  over:     
+  $(".bottom-trash").removeClass("bottom-trash-active"),
   drop: function(event, ui) {
     console.log("drop");
     ui.draggable.remove();
   },
   out: function(event, ui) {
+    $(".bottom-trash").removeClass("bottom-trash-active");
     console.log("out")
   }
 }); //end of trash.droppable function
